@@ -1,0 +1,36 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="MainRestService"
+     targetNamespace="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/MainRestService"
+     xmlns:tns="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/MainRestService"
+     xmlns:inp1="http://TargetNamespace.com/MainRestService_OrderOperation_request"
+     xmlns:inp2="http://TargetNamespace.com/MainRestService_OrderOperation_response"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="MainRestService">
+        <plnk:role name="MainRestServiceProvider" portType="tns:MainRestService_ptt"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/MainRestService_OrderOperation_request"
+                 schemaLocation="../Schemas/order_request_bs.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/MainRestService_OrderOperation_response"
+                 schemaLocation="../Schemas/order_response_bs.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="OrderOperation_inputMessage">
+        <wsdl:part name="request" element="inp1:Root-Element"/>
+    </wsdl:message>
+    <wsdl:message name="OrderOperation_outputMessage">
+        <wsdl:part name="reply" element="inp2:Root-Element"/>
+    </wsdl:message>
+    <wsdl:portType name="MainRestService_ptt">
+        <wsdl:operation name="OrderOperation">
+            <wsdl:input message="tns:OrderOperation_inputMessage"/>
+            <wsdl:output message="tns:OrderOperation_outputMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,175 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Dec 12 09:24:39 ECT 2021
+  Author:  alexjcm
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="MyBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/MyBPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/MyBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/MainRestService"
+         xmlns:ns2="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/CustomerRestReference"
+         xmlns:ns3="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/OrderrRestReference"
+         xmlns:ns4="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/OrderrDetailRestReference"
+         xmlns:ns5="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/ProductRestReference"
+         xmlns:ns6="http://TargetNamespace.com/MainRestService_OrderOperation_request"
+         xmlns:ns7="http://TargetNamespace.com/CustomerRestReference_Operation1_request"
+         xmlns:ns8="http://TargetNamespace.com/CustomerRestReference_Operation1_response"
+         xmlns:ns9="http://TargetNamespace.com/OrderrRestReference_OrderrOp_request"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns10="http://TargetNamespace.com/ProductRestReference_ProductOp_request"
+         xmlns:ns12="http://TargetNamespace.com/OrderrDetailRestReference_OrderrDetailOp_request"
+         xmlns:ns11="http://TargetNamespace.com/OrderrRestReference_OrderrOp_response"
+         xmlns:ns13="http://TargetNamespace.com/ProductRestReference_ProductOp_response"
+         xmlns:ns15="http://TargetNamespace.com/OrderrDetailRestReference_OrderrDetailOp_response"
+         xmlns:ns14="http://TargetNamespace.com/MainRestService_OrderOperation_response">
+  <import namespace="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/MainRestService"
+          location="../WSDLs/MainRestService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" ui:processWSDL="true"/>
+  <partnerLinks>
+    <partnerLink name="MainRestService" partnerLinkType="ns1:MainRestService" myRole="MainRestServiceProvider"/>
+    <partnerLink name="CustomerRestReference" partnerLinkType="ns2:CustomerRestReference"
+                 partnerRole="CustomerRestReferenceProvider"/>
+    <partnerLink name="OrderrRestReference" partnerLinkType="ns3:OrderrRestReference"
+                 partnerRole="OrderrRestReferenceProvider"/>
+    <partnerLink name="OrderrDetailRestReference" partnerLinkType="ns4:OrderrDetailRestReference"
+                 partnerRole="OrderrDetailRestReferenceProvider"/>
+    <partnerLink name="ProductRestReference" partnerLinkType="ns5:ProductRestReference"
+                 partnerRole="ProductRestReferenceProvider"/>
+  </partnerLinks>
+  <variables>
+    <variable name="receiveInput_OrderOperation_InputVariable" messageType="ns1:OrderOperation_inputMessage"/>
+    <variable name="replyOutput_OrderOperation_OutputVariable" messageType="ns1:OrderOperation_outputMessage"/>
+    <variable name="getCustomer_Operation1_InputVariable" messageType="ns2:Operation1_inputMessage"/>
+    <variable name="getCustomer_Operation1_OutputVariable" messageType="ns2:Operation1_outputMessage"/>
+    <variable name="createOrderr_OrderrOp_InputVariable" messageType="ns3:OrderrOp_inputMessage"/>
+    <variable name="createOrderr_OrderrOp_OutputVariable" messageType="ns3:OrderrOp_outputMessage"/>
+    <variable name="createOrderrDetail_OrderrDetailOp_InputVariable" messageType="ns4:OrderrDetailOp_inputMessage"/>
+    <variable name="createOrderrDetail_OrderrDetailOp_OutputVariable" messageType="ns4:OrderrDetailOp_outputMessage"/>
+    <variable name="getProduct_ProductOp_InputVariable" messageType="ns5:ProductOp_inputMessage"/>
+    <variable name="getProduct_ProductOp_OutputVariable" messageType="ns5:ProductOp_outputMessage"/>
+  </variables>
+  <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in MyBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="MainRestService" portType="ns1:MainRestService_ptt"
+             operation="OrderOperation" variable="receiveInput_OrderOperation_InputVariable" createInstance="yes"/>
+    <assign name="customerInput">
+      <copy>
+        <from>$receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:taxIdentificationNumber</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$getCustomer_Operation1_InputVariable.request/ns7:customer/ns7:taxIdentificationNumber</to>
+      </copy>
+    </assign>
+    <invoke name="getCustomer" partnerLink="CustomerRestReference"
+            portType="ns2:CustomerRestReference_ptt" operation="Operation1"
+            inputVariable="getCustomer_Operation1_InputVariable"
+            outputVariable="getCustomer_Operation1_OutputVariable" bpelx:invokeAsDetail="no"/>
+    <assign name="generateDocNumber">
+      <copy>
+        <from expressionLanguage="javascript">(Math.floor(Math.random() * (10000 - 1)) + 1).toFixed();</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderr_OrderrOp_InputVariable.request/ns9:orderr/ns9:documentNumber</to>
+      </copy>
+    </assign>
+    <assign name="orderrInput">
+      <copy>
+        <from>xp20:current-dateTime()</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderr_OrderrOp_InputVariable.request/ns9:orderr/ns9:orderrDate</to>
+      </copy>
+      <copy>
+        <from>$getCustomer_Operation1_OutputVariable.reply/ns8:customer/ns8:id</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderr_OrderrOp_InputVariable.request/ns9:orderr/ns9:customerId</to>
+      </copy>
+    </assign>
+    <invoke name="createOrderr" partnerLink="OrderrRestReference"
+            portType="ns3:OrderrRestReference_ptt" operation="OrderrOp"
+            inputVariable="createOrderr_OrderrOp_InputVariable" outputVariable="createOrderr_OrderrOp_OutputVariable"
+            bpelx:invokeAsDetail="no"/>
+    <forEach parallel="no" counterName="ForEach1Counter" name="ForEach1">
+      <startCounterValue expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">1</startCounterValue>
+      <finalCounterValue expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">count($receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:product)</finalCounterValue>
+      <scope name="Scope1">
+        <faultHandlers>
+          <catch faultName="bpelx:remoteFault"></catch>
+        </faultHandlers>
+        <sequence>
+          <assign name="productsInput">
+            <copy>
+              <from>$receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:product[$ForEach1Counter]/ns6:productCode</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$getProduct_ProductOp_InputVariable.request/ns10:product/ns10:productCode</to>
+            </copy>
+          </assign>
+          <invoke name="getProduct" partnerLink="ProductRestReference" portType="ns5:ProductRestReference_ptt"
+                  operation="ProductOp" inputVariable="getProduct_ProductOp_InputVariable"
+                  outputVariable="getProduct_ProductOp_OutputVariable" bpelx:invokeAsDetail="no"/>
+          <assign name="inputOrderrDetail">
+            <copy>
+              <from>$createOrderr_OrderrOp_OutputVariable.reply/ns11:orderr/ns11:id</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderrDetail_OrderrDetailOp_InputVariable.request/ns12:orderrDetail/ns12:orderrId</to>
+            </copy>
+            <copy>
+              <from>$getProduct_ProductOp_OutputVariable.reply/ns13:product/ns13:id</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderrDetail_OrderrDetailOp_InputVariable.request/ns12:orderrDetail/ns12:productId</to>
+            </copy>
+            <copy>
+              <from>$receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:product[$ForEach1Counter]/ns6:quantity</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderrDetail_OrderrDetailOp_InputVariable.request/ns12:orderrDetail/ns12:quantity</to>
+            </copy>
+          </assign>
+          <invoke name="createOrderrDetail" partnerLink="OrderrDetailRestReference"
+                  portType="ns4:OrderrDetailRestReference_ptt" operation="OrderrDetailOp"
+                  inputVariable="createOrderrDetail_OrderrDetailOp_InputVariable"
+                  outputVariable="createOrderrDetail_OrderrDetailOp_OutputVariable" bpelx:invokeAsDetail="no"/>
+          <assign name="outputOrderrDetail">
+            <copy>
+              <from>$createOrderrDetail_OrderrDetailOp_OutputVariable.reply/ns15:orderrDetail/ns15:orderrId</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$replyOutput_OrderOperation_OutputVariable.reply/ns14:order/ns14:id</to>
+            </copy>
+          </assign>
+        </sequence>
+      </scope>
+    </forEach>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="MainRestService" portType="ns1:MainRestService_ptt"
+           operation="OrderOperation"
+           variable="replyOutput_OrderOperation_OutputVariable"/>
+  </sequence>
+</process>
