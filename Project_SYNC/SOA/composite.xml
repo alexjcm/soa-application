@@ -17,6 +17,8 @@
           location="WSDLs/OrderrDetailRestReference.wsdl" importType="wsdl"/>
   <import namespace="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/CustomerRestReference"
           location="WSDLs/CustomerRestReferenceWrapper.wsdl" importType="wsdl"/>
+  <import namespace="http://email/" location="WSDLs/MyEmailServicePort.wsdl" importType="wsdl"/>
+  <import namespace="http://email/" location="WSDLs/MyEmailServicePortWrapper.wsdl" importType="wsdl"/>
   <service name="MainRestService" ui:wsdlLocation="WSDLs/MainRestService.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/MainRestService#wsdl.interface(MainRestService_ptt)"/>
     <binding.rest config="WADLs/MainRestService.wadl"/>
@@ -40,6 +42,9 @@
       </reference>
       <reference name="ProductRestReference" ui:wsdlLocation="WSDLs/ProductRestReference.wsdl">
         <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/ProductRestReference#wsdl.interface(ProductRestReference_ptt)"/>
+      </reference>
+      <reference name="EmailSOAPReference" ui:wsdlLocation="WSDLs/MyEmailServicePortWrapper.wsdl">
+        <interface.wsdl interface="http://email/#wsdl.interface(MyEmailService)"/>
       </reference>
     </componentType>
     <property name="bpel.config.transaction" type="xs:string" many="false">required</property>
@@ -65,10 +70,13 @@
     <binding.rest config="WADLs/OrderrDetailRestReference.wadl"
                   location="http://localhost:7101/CustomSBProject/MainPS"/>
   </reference>
-  <wire>
-    <source.uri>MainRestService</source.uri>
-    <target.uri>MyBPELProcess/MainRestService</target.uri>
-  </wire>
+  <reference name="EmailSOAPReference" ui:wsdlLocation="WSDLs/MyEmailServicePort.wsdl">
+    <interface.wsdl interface="http://email/#wsdl.interface(MyEmailService)"/>
+    <binding.ws port="http://email/#wsdl.endpoint(MyEmailService/MyEmailServicePort)"
+                location="WSDLs/MyEmailServicePort.wsdl" soapVersion="1.2">
+      <property name="weblogic.wsee.wsat.transaction.flowOption" type="xs:string" many="false">WSDLDriven</property>
+    </binding.ws>
+  </reference>
   <wire>
     <source.uri>MyBPELProcess/CustomerRestReference</source.uri>
     <target.uri>CustomerRestReference</target.uri>
@@ -84,5 +92,13 @@
   <wire>
     <source.uri>MyBPELProcess/ProductRestReference</source.uri>
     <target.uri>ProductRestReference</target.uri>
+  </wire>
+  <wire>
+    <source.uri>MainRestService</source.uri>
+    <target.uri>MyBPELProcess/MainRestService</target.uri>
+  </wire>
+  <wire>
+    <source.uri>MyBPELProcess/EmailSOAPReference</source.uri>
+    <target.uri>EmailSOAPReference</target.uri>
   </wire>
 </composite>

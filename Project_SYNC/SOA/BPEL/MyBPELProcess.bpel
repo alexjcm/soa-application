@@ -41,7 +41,7 @@
          xmlns:ns11="http://TargetNamespace.com/OrderrRestReference_OrderrOp_response"
          xmlns:ns13="http://TargetNamespace.com/ProductRestReference_ProductOp_response"
          xmlns:ns15="http://TargetNamespace.com/OrderrDetailRestReference_OrderrDetailOp_response"
-         xmlns:ns14="http://TargetNamespace.com/MainRestService_OrderOperation_response">
+         xmlns:ns14="http://TargetNamespace.com/MainRestService_OrderOperation_response" xmlns:ns16="http://email/">
   <import namespace="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/MainRestService"
           location="../WSDLs/MainRestService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" ui:processWSDL="true"/>
   <partnerLinks>
@@ -54,6 +54,7 @@
                  partnerRole="OrderrDetailRestReferenceProvider"/>
     <partnerLink name="ProductRestReference" partnerLinkType="ns5:ProductRestReference"
                  partnerRole="ProductRestReferenceProvider"/>
+    <partnerLink name="EmailSOAPReference" partnerLinkType="ns16:EmailSOAPReference" partnerRole="MyEmailService"/>
   </partnerLinks>
   <variables>
     <variable name="receiveInput_OrderOperation_InputVariable" messageType="ns1:OrderOperation_inputMessage"/>
@@ -66,6 +67,8 @@
     <variable name="createOrderrDetail_OrderrDetailOp_OutputVariable" messageType="ns4:OrderrDetailOp_outputMessage"/>
     <variable name="getProduct_ProductOp_InputVariable" messageType="ns5:ProductOp_inputMessage"/>
     <variable name="getProduct_ProductOp_OutputVariable" messageType="ns5:ProductOp_outputMessage"/>
+    <variable name="emailNotification_sendEmail_InputVariable" messageType="ns16:sendEmail"/>
+    <variable name="emailNotification_sendEmail_OutputVariable" messageType="ns16:sendEmailResponse"/>
   </variables>
   <!-- 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,9 +97,12 @@
     <receive name="receiveInput" partnerLink="MainRestService" portType="ns1:MainRestService_ptt"
              operation="OrderOperation" variable="receiveInput_OrderOperation_InputVariable" createInstance="yes"/>
     <assign name="customerInput">
+      <bpelx:annotation>
+        <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+      </bpelx:annotation>
       <copy>
-        <from>$receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:taxIdentificationNumber</from>
-        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$getCustomer_Operation1_InputVariable.request/ns7:customer/ns7:taxIdentificationNumber</to>
+        <from>ora:doXSLTransformForDoc("../Transformations/customerInput.xsl", $receiveInput_OrderOperation_InputVariable.request)</from>
+        <to variable="getCustomer_Operation1_InputVariable" part="request"/>
       </copy>
     </assign>
     <invoke name="getCustomer" partnerLink="CustomerRestReference"
@@ -127,9 +133,6 @@
       <startCounterValue expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">1</startCounterValue>
       <finalCounterValue expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">count($receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:product)</finalCounterValue>
       <scope name="Scope1">
-        <faultHandlers>
-          <catch faultName="bpelx:remoteFault"></catch>
-        </faultHandlers>
         <sequence>
           <assign name="productsInput">
             <copy>
@@ -167,6 +170,20 @@
         </sequence>
       </scope>
     </forEach>
+    <assign name="generateMsgEmail">
+      <copy>
+        <from>concat('customer-',$getCustomer_Operation1_InputVariable.request/ns7:customer/ns7:taxIdentificationNumber,'@example.com')</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$emailNotification_sendEmail_InputVariable.parameters/toEmail</to>
+      </copy>
+      <copy>
+        <from>'Su pedido fue siendo procesado con éxito'</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$emailNotification_sendEmail_InputVariable.parameters/message</to>
+      </copy>
+    </assign>
+    <invoke name="emailNotification" partnerLink="EmailSOAPReference"
+            portType="ns16:MyEmailService" operation="sendEmail"
+            inputVariable="emailNotification_sendEmail_InputVariable"
+            outputVariable="emailNotification_sendEmail_OutputVariable" bpelx:invokeAsDetail="no"/>
     <!-- Generate reply to synchronous request -->
     <reply name="replyOutput" partnerLink="MainRestService" portType="ns1:MainRestService_ptt"
            operation="OrderOperation"
