@@ -129,7 +129,7 @@
             portType="ns3:OrderrRestReference_ptt" operation="OrderrOp"
             inputVariable="createOrderr_OrderrOp_InputVariable" outputVariable="createOrderr_OrderrOp_OutputVariable"
             bpelx:invokeAsDetail="no"/>
-    <forEach parallel="no" counterName="ForEach1Counter" name="ForEach1">
+    <forEach parallel="no" counterName="ForEach1Counter" name="ForEachProducts">
       <startCounterValue expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">1</startCounterValue>
       <finalCounterValue expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">count($receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:product)</finalCounterValue>
       <scope name="Scope1">
