@@ -13,10 +13,12 @@
     </plnk:partnerLinkType>
     <wsdl:types>
         <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-            <xsd:import namespace="http://TargetNamespace.com/ProductRestReference_ProductOp_request" schemaLocation="../Schemas/product_request.xsd"/>
+            <xsd:import namespace="http://TargetNamespace.com/ProductRestReference_ProductOp_request"
+                 schemaLocation="../Schemas/product_request.xsd"/>
         </xsd:schema>
         <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-            <xsd:import namespace="http://TargetNamespace.com/ProductRestReference_ProductOp_response" schemaLocation="../Schemas/product_response.xsd"/>
+            <xsd:import namespace="http://TargetNamespace.com/ProductRestReference_ProductOp_response"
+                 schemaLocation="../Schemas/product_response.xsd"/>
         </xsd:schema>
     </wsdl:types>
     <wsdl:message name="ProductOp_inputMessage">
