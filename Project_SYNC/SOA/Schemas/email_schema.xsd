@@ -1,5 +1,5 @@
 <?xml version= '1.0' encoding= 'UTF-8' ?>
-<xsd:schema xmlns:ns0="http://email/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://email/">
+<xsd:schema targetNamespace="http://email/" xmlns:ns0="http://email/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <xsd:complexType name="sendEmail">
         <xsd:sequence>
             <xsd:element name="toEmail" type="xsd:string" minOccurs="1"/>
@@ -14,4 +14,3 @@
     <xsd:element name="sendEmail" type="ns0:sendEmail"/>
     <xsd:element name="sendEmailResponse" type="ns0:sendEmailResponse"/>
 </xsd:schema>
-<!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.3.0-wls122140-b190328.0053 svn-revision#unknown. -->

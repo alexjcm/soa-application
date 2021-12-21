@@ -67,8 +67,8 @@
     <variable name="createOrderrDetail_OrderrDetailOp_OutputVariable" messageType="ns4:OrderrDetailOp_outputMessage"/>
     <variable name="getProduct_ProductOp_InputVariable" messageType="ns5:ProductOp_inputMessage"/>
     <variable name="getProduct_ProductOp_OutputVariable" messageType="ns5:ProductOp_outputMessage"/>
-    <variable name="emailNotification_sendEmail_InputVariable" messageType="ns16:sendEmail"/>
-    <variable name="emailNotification_sendEmail_OutputVariable" messageType="ns16:sendEmailResponse"/>
+    <variable name="sendEmailMsg_sendEmail_InputVariable" messageType="ns16:sendEmail"/>
+    <variable name="sendEmailMsg_sendEmail_OutputVariable" messageType="ns16:sendEmailResponse"/>
   </variables>
   <!-- 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,20 +170,19 @@
         </sequence>
       </scope>
     </forEach>
-    <assign name="generateMsgEmail">
+    <assign name="generateEmailMsg">
       <copy>
-        <from>concat('customer-',$getCustomer_Operation1_InputVariable.request/ns7:customer/ns7:taxIdentificationNumber,'@example.com')</from>
-        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$emailNotification_sendEmail_InputVariable.parameters/toEmail</to>
+        <from>concat('customer',$receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:taxIdentificationNumber, '@gmail.com')</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$sendEmailMsg_sendEmail_InputVariable.parameters/toEmail</to>
       </copy>
       <copy>
-        <from>'Su pedido fue siendo procesado con éxito'</from>
-        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$emailNotification_sendEmail_InputVariable.parameters/message</to>
+        <from>'Your order was successfully processed.'</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$sendEmailMsg_sendEmail_InputVariable.parameters/message</to>
       </copy>
     </assign>
-    <invoke name="emailNotification" partnerLink="EmailSOAPReference"
-            portType="ns16:MyEmailService" operation="sendEmail"
-            inputVariable="emailNotification_sendEmail_InputVariable"
-            outputVariable="emailNotification_sendEmail_OutputVariable" bpelx:invokeAsDetail="no"/>
+    <invoke name="sendEmailMsg" partnerLink="EmailSOAPReference"
+            portType="ns16:MyEmailService" operation="sendEmail" inputVariable="sendEmailMsg_sendEmail_InputVariable"
+            outputVariable="sendEmailMsg_sendEmail_OutputVariable" bpelx:invokeAsDetail="no"/>
     <!-- Generate reply to synchronous request -->
     <reply name="replyOutput" partnerLink="MainRestService" portType="ns1:MainRestService_ptt"
            operation="OrderOperation"

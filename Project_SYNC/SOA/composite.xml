@@ -72,7 +72,7 @@
   </reference>
   <reference name="EmailSOAPReference" ui:wsdlLocation="WSDLs/MyEmailServicePort.wsdl">
     <interface.wsdl interface="http://email/#wsdl.interface(MyEmailService)"/>
-    <binding.ws port="http://email/#wsdl.endpoint(MyEmailService/MyEmailServicePort)"
+    <binding.ws port="http://email/#wsdl.endpoint(MyEmailServicePortBindingQSService/MyEmailServicePortBindingQSPort)"
                 location="WSDLs/MyEmailServicePort.wsdl" soapVersion="1.2">
       <property name="weblogic.wsee.wsat.transaction.flowOption" type="xs:string" many="false">WSDLDriven</property>
     </binding.ws>
