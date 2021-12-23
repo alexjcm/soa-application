@@ -51,7 +51,7 @@
   </component>
   <reference name="CustomerRestReference" ui:wsdlLocation="WSDLs/CustomerRestReference.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/CustomerRestReference#wsdl.interface(CustomerRestReference_ptt)"/>
-    <binding.rest config="WADLs/CustomerRestReference.wadl" location="http://localhost:7101/CustomSBProject/MainPS">
+    <binding.rest config="WADLs/CustomerRestReference.wadl" location="http://ajcm:7101/CustomSBProject/MainPS">
       <property name="oracle.webservices.httpConnTimeout" type="xs:integer" many="false" override="may">50000</property>
       <property name="oracle.webservices.httpReadTimeout" type="xs:integer" many="false" override="may">500000</property>
       <property name="weblogic.wsee.wsat.transaction.flowOption" type="xs:string" many="false">WSDLDriven</property>
@@ -59,16 +59,15 @@
   </reference>
   <reference name="ProductRestReference" ui:wsdlLocation="WSDLs/ProductRestReference.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/ProductRestReference#wsdl.interface(ProductRestReference_ptt)"/>
-    <binding.rest config="WADLs/ProductRestReference.wadl" location="http://localhost:7101/CustomSBProject/MainPS"/>
+    <binding.rest config="WADLs/ProductRestReference.wadl" location="http://ajcm:7101/CustomSBProject/MainPS"/>
   </reference>
   <reference name="OrderrRestReference" ui:wsdlLocation="WSDLs/OrderrRestReference.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/OrderrRestReference#wsdl.interface(OrderrRestReference_ptt)"/>
-    <binding.rest config="WADLs/OrderrRestReference.wadl" location="http://localhost:7101/CustomSBProject/MainPS"/>
+    <binding.rest config="WADLs/OrderrRestReference.wadl" location="http://ajcm:7101/CustomSBProject/MainPS"/>
   </reference>
   <reference name="OrderrDetailRestReference" ui:wsdlLocation="WSDLs/OrderrDetailRestReference.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/OrderrDetailRestReference#wsdl.interface(OrderrDetailRestReference_ptt)"/>
-    <binding.rest config="WADLs/OrderrDetailRestReference.wadl"
-                  location="http://localhost:7101/CustomSBProject/MainPS"/>
+    <binding.rest config="WADLs/OrderrDetailRestReference.wadl" location="http://ajcm:7101/CustomSBProject/MainPS"/>
   </reference>
   <reference name="EmailSOAPReference" ui:wsdlLocation="WSDLs/MyEmailServicePort.wsdl">
     <interface.wsdl interface="http://email/#wsdl.interface(MyEmailService)"/>
