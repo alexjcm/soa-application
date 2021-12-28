@@ -1,0 +1,95 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="RestReferenceMain"
+     targetNamespace="http://xmlns.oracle.com/TestSOAApplication/Project_Direct/RestReferenceMain"
+     xmlns:tns="http://xmlns.oracle.com/TestSOAApplication/Project_Direct/RestReferenceMain"
+     xmlns:inp1="http://TargetNamespace.com/RestReferenceMain_OpCustomer_request"
+     xmlns:inp2="http://TargetNamespace.com/RestReferenceMain_OpCustomer_response"
+     xmlns:inp3="http://TargetNamespace.com/RestReferenceMain_OpProduct_request"
+     xmlns:inp4="http://TargetNamespace.com/RestReferenceMain_OpProduct_response"
+     xmlns:inp5="http://TargetNamespace.com/RestReferenceMain_OpOrderr_request"
+     xmlns:inp6="http://TargetNamespace.com/RestReferenceMain_OpOrderr_response"
+     xmlns:inp7="http://TargetNamespace.com/RestReferenceMain_OpOrderrDetail_request"
+     xmlns:inp8="http://TargetNamespace.com/RestReferenceMain_OpOrderrDetail_response"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="RestReferenceMain">
+        <plnk:role name="RestReferenceMainProvider" portType="tns:RestReferenceMain_ptt"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpCustomer_request"
+                 schemaLocation="../Schemas/customer_request.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpCustomer_response"
+                 schemaLocation="../Schemas/customer_response.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpProduct_request"
+                 schemaLocation="../Schemas/product_request.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpProduct_response"
+                 schemaLocation="../Schemas/product_response.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpOrderr_request" schemaLocation="../Schemas/orderr_request.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpOrderr_response"
+                 schemaLocation="../Schemas/orderr_response.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpOrderrDetail_request"
+                 schemaLocation="../Schemas/orderrdetail_request.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpOrderrDetail_response"
+                 schemaLocation="../Schemas/orderrdetail_response.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="OpCustomer_inputMessage">
+        <wsdl:part name="request" element="inp1:Root-Element"/>
+    </wsdl:message>
+    <wsdl:message name="OpCustomer_outputMessage">
+        <wsdl:part name="reply" element="inp2:Root-Element"/>
+    </wsdl:message>
+    <wsdl:message name="OpProduct_inputMessage">
+        <wsdl:part name="request" element="inp3:Root-Element"/>
+    </wsdl:message>
+    <wsdl:message name="OpProduct_outputMessage">
+        <wsdl:part name="reply" element="inp4:Root-Element"/>
+    </wsdl:message>
+    <wsdl:message name="OpOrderr_inputMessage">
+        <wsdl:part name="request" element="inp5:Root-Element"/>
+    </wsdl:message>
+    <wsdl:message name="OpOrderr_outputMessage">
+        <wsdl:part name="reply" element="inp6:Root-Element"/>
+    </wsdl:message>
+    <wsdl:message name="OpOrderrDetail_inputMessage">
+        <wsdl:part name="request" element="inp7:Root-Element"/>
+    </wsdl:message>
+    <wsdl:message name="OpOrderrDetail_outputMessage">
+        <wsdl:part name="reply" element="inp8:Root-Element"/>
+    </wsdl:message>
+    <wsdl:portType name="RestReferenceMain_ptt">
+        <wsdl:operation name="OpCustomer">
+            <wsdl:input message="tns:OpCustomer_inputMessage"/>
+            <wsdl:output message="tns:OpCustomer_outputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpProduct">
+            <wsdl:input message="tns:OpProduct_inputMessage"/>
+            <wsdl:output message="tns:OpProduct_outputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpOrderr">
+            <wsdl:input message="tns:OpOrderr_inputMessage"/>
+            <wsdl:output message="tns:OpOrderr_outputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpOrderrDetail">
+            <wsdl:input message="tns:OpOrderrDetail_inputMessage"/>
+            <wsdl:output message="tns:OpOrderrDetail_outputMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,72 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns3="http://TargetNamespace.com/RestReferenceMain_OpOrderrDetail_request" xmlns:ns1="http://TargetNamespace.com/RestReferenceMain_OpProduct_request" xmlns:ns0="http://TargetNamespace.com/RestReferenceMain_OpCustomer_request" xmlns:ns2="http://TargetNamespace.com/RestReferenceMain_OpOrderr_request" xmlns="http://wadl.dev.java.net/2009/02">
+   <doc title="RestReferenceMain">RestReference</doc>
+   <grammars>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpCustomer_request" schemaLocation="../Schemas/customer_request.xsd"/>
+        </xsd:schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpCustomer_response" schemaLocation="../Schemas/customer_response.xsd"/>
+        </xsd:schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpProduct_request" schemaLocation="../Schemas/product_request.xsd"/>
+        </xsd:schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpProduct_response" schemaLocation="../Schemas/product_response.xsd"/>
+        </xsd:schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpOrderr_request" schemaLocation="../Schemas/orderr_request.xsd"/>
+        </xsd:schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpOrderr_response" schemaLocation="../Schemas/orderr_response.xsd"/>
+        </xsd:schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpOrderrDetail_request" schemaLocation="../Schemas/orderrdetail_request.xsd"/>
+        </xsd:schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/RestReferenceMain_OpOrderrDetail_response" schemaLocation="../Schemas/orderrdetail_response.xsd"/>
+        </xsd:schema>
+   </grammars>
+   <resources>
+      <resource path="/entities/customer">
+         <method name="GET" soa:wsdlOperation="OpCustomer">
+            <request soa:paramElement="pns:Root-Element" xmlns:pns="http://TargetNamespace.com/RestReferenceMain_OpCustomer_request">
+               <param name="taxIdentificationNumber" style="query" soa:expression="$msg.request/ns0:taxIdentificationNumber" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/RestReferenceMain_OpCustomer_response"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/entities/product">
+         <method name="GET" soa:wsdlOperation="OpProduct">
+            <request soa:paramElement="pns:Root-Element" xmlns:pns="http://TargetNamespace.com/RestReferenceMain_OpProduct_request">
+               <param name="productCode" style="query" soa:expression="$msg.request/ns1:productCode" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/RestReferenceMain_OpProduct_response"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/entities/orderr">
+         <method name="POST" soa:wsdlOperation="OpOrderr">
+            <request>
+               <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/RestReferenceMain_OpOrderr_request"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/RestReferenceMain_OpOrderr_response"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/entities/orderrdetail">
+         <method name="POST" soa:wsdlOperation="OpOrderrDetail">
+            <request>
+               <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/RestReferenceMain_OpOrderrDetail_request"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/RestReferenceMain_OpOrderrDetail_response"/>
+            </response>
+         </method>
+      </resource>
+   </resources>
+</application>

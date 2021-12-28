@@ -161,15 +161,15 @@
                   portType="ns4:OrderrDetailRestReference_ptt" operation="OrderrDetailOp"
                   inputVariable="createOrderrDetail_OrderrDetailOp_InputVariable"
                   outputVariable="createOrderrDetail_OrderrDetailOp_OutputVariable" bpelx:invokeAsDetail="no"/>
-          <assign name="outputOrderrDetail">
-            <copy>
-              <from>$createOrderrDetail_OrderrDetailOp_OutputVariable.reply/ns15:orderrDetail/ns15:orderrId</from>
-              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$replyOutput_OrderOperation_OutputVariable.reply/ns14:order/ns14:id</to>
-            </copy>
-          </assign>
         </sequence>
       </scope>
     </forEach>
+    <assign name="outputOrderrDetail">
+      <copy>
+        <from>$createOrderrDetail_OrderrDetailOp_OutputVariable.reply/ns15:orderrDetail/ns15:orderrId</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$replyOutput_OrderOperation_OutputVariable.reply/ns14:order/ns14:id</to>
+      </copy>
+    </assign>
     <assign name="generateEmailMsg">
       <copy>
         <from>concat('customer',$receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:taxIdentificationNumber, '@gmail.com')</from>
