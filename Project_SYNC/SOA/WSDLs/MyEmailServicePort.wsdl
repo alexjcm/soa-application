@@ -41,7 +41,7 @@
     <WL5G3N0:service name="MyEmailServicePortBindingQSService">
         <WL5G3N0:documentation>OSB Service</WL5G3N0:documentation>
         <WL5G3N0:port name="MyEmailServicePortBindingQSPort" binding="WL5G3N1:MyEmailServicePortBinding">
-            <WL5G3N2:address location="http://ajcm:7101/EmailSBProject/EmailPS"/>
+            <WL5G3N2:address location="http://localhost:7101/EmailSBProject/EmailPS"/>
         </WL5G3N0:port>
     </WL5G3N0:service>
 </WL5G3N0:definitions>

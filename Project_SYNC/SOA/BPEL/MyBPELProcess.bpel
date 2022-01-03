@@ -46,29 +46,29 @@
           location="../WSDLs/MainRestService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" ui:processWSDL="true"/>
   <partnerLinks>
     <partnerLink name="MainRestService" partnerLinkType="ns1:MainRestService" myRole="MainRestServiceProvider"/>
-    <partnerLink name="CustomerRestReference" partnerLinkType="ns2:CustomerRestReference"
-                 partnerRole="CustomerRestReferenceProvider"/>
     <partnerLink name="OrderrRestReference" partnerLinkType="ns3:OrderrRestReference"
                  partnerRole="OrderrRestReferenceProvider"/>
     <partnerLink name="OrderrDetailRestReference" partnerLinkType="ns4:OrderrDetailRestReference"
                  partnerRole="OrderrDetailRestReferenceProvider"/>
+    <partnerLink name="EmailSOAPReference" partnerLinkType="ns16:EmailSOAPReference" partnerRole="MyEmailService"/>
+    <partnerLink name="CustomerRestReference" partnerLinkType="ns2:CustomerRestReference"
+                 partnerRole="CustomerRestReferenceProvider"/>
     <partnerLink name="ProductRestReference" partnerLinkType="ns5:ProductRestReference"
                  partnerRole="ProductRestReferenceProvider"/>
-    <partnerLink name="EmailSOAPReference" partnerLinkType="ns16:EmailSOAPReference" partnerRole="MyEmailService"/>
   </partnerLinks>
   <variables>
     <variable name="receiveInput_OrderOperation_InputVariable" messageType="ns1:OrderOperation_inputMessage"/>
     <variable name="replyOutput_OrderOperation_OutputVariable" messageType="ns1:OrderOperation_outputMessage"/>
-    <variable name="getCustomer_Operation1_InputVariable" messageType="ns2:Operation1_inputMessage"/>
-    <variable name="getCustomer_Operation1_OutputVariable" messageType="ns2:Operation1_outputMessage"/>
     <variable name="createOrderr_OrderrOp_InputVariable" messageType="ns3:OrderrOp_inputMessage"/>
     <variable name="createOrderr_OrderrOp_OutputVariable" messageType="ns3:OrderrOp_outputMessage"/>
     <variable name="createOrderrDetail_OrderrDetailOp_InputVariable" messageType="ns4:OrderrDetailOp_inputMessage"/>
     <variable name="createOrderrDetail_OrderrDetailOp_OutputVariable" messageType="ns4:OrderrDetailOp_outputMessage"/>
-    <variable name="getProduct_ProductOp_InputVariable" messageType="ns5:ProductOp_inputMessage"/>
-    <variable name="getProduct_ProductOp_OutputVariable" messageType="ns5:ProductOp_outputMessage"/>
     <variable name="sendEmailMsg_sendEmail_InputVariable" messageType="ns16:sendEmail"/>
     <variable name="sendEmailMsg_sendEmail_OutputVariable" messageType="ns16:sendEmailResponse"/>
+    <variable name="getCustomer_Op1_InputVar" messageType="ns2:Operation1_inputMessage"/>
+    <variable name="getCustomer_Op1_OutputVar" messageType="ns2:Operation1_outputMessage"/>
+    <variable name="getProduct_ProductOp_InputVar" messageType="ns5:ProductOp_inputMessage"/>
+    <variable name="getProduct_ProductOp_OutputVar" messageType="ns5:ProductOp_outputMessage"/>
   </variables>
   <!-- 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,14 +101,13 @@
         <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
       </bpelx:annotation>
       <copy>
-        <from>ora:doXSLTransformForDoc("../Transformations/customerInput.xsl", $receiveInput_OrderOperation_InputVariable.request)</from>
-        <to variable="getCustomer_Operation1_InputVariable" part="request"/>
+        <from>ora:doXSLTransformForDoc("../Transformations/customerIn.xsl", $receiveInput_OrderOperation_InputVariable.request)</from>
+        <to variable="getCustomer_Op1_InputVar" part="request"/>
       </copy>
     </assign>
     <invoke name="getCustomer" partnerLink="CustomerRestReference"
-            portType="ns2:CustomerRestReference_ptt" operation="Operation1"
-            inputVariable="getCustomer_Operation1_InputVariable"
-            outputVariable="getCustomer_Operation1_OutputVariable" bpelx:invokeAsDetail="no"/>
+            portType="ns2:CustomerRestReference_ptt" operation="Operation1" inputVariable="getCustomer_Op1_InputVar"
+            outputVariable="getCustomer_Op1_OutputVar" bpelx:invokeAsDetail="no"/>
     <assign name="generateDocNumber">
       <copy>
         <from expressionLanguage="javascript">(Math.floor(Math.random() * (10000 - 1)) + 1).toFixed();</from>
@@ -121,7 +120,7 @@
         <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderr_OrderrOp_InputVariable.request/ns9:orderr/ns9:orderrDate</to>
       </copy>
       <copy>
-        <from>$getCustomer_Operation1_OutputVariable.reply/ns8:customer/ns8:id</from>
+        <from>$getCustomer_Op1_OutputVar.reply/ns8:customer/ns8:id</from>
         <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderr_OrderrOp_InputVariable.request/ns9:orderr/ns9:customerId</to>
       </copy>
     </assign>
@@ -129,27 +128,34 @@
             portType="ns3:OrderrRestReference_ptt" operation="OrderrOp"
             inputVariable="createOrderr_OrderrOp_InputVariable" outputVariable="createOrderr_OrderrOp_OutputVariable"
             bpelx:invokeAsDetail="no"/>
+    <assign name="outputCreateOrderr">
+      <copy>
+        <from>$createOrderr_OrderrOp_OutputVariable.reply/ns11:orderr/ns11:id</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$replyOutput_OrderOperation_OutputVariable.reply/ns14:order/ns14:id</to>
+      </copy>
+    </assign>
     <forEach parallel="no" counterName="ForEach1Counter" name="ForEachProducts">
       <startCounterValue expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">1</startCounterValue>
       <finalCounterValue expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">count($receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:product)</finalCounterValue>
       <scope name="Scope1">
         <sequence>
-          <assign name="productsInput">
+          <assign name="productInput">
             <copy>
               <from>$receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:product[$ForEach1Counter]/ns6:productCode</from>
-              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$getProduct_ProductOp_InputVariable.request/ns10:product/ns10:productCode</to>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$getProduct_ProductOp_InputVar.request/ns10:product/ns10:productCode</to>
             </copy>
           </assign>
-          <invoke name="getProduct" partnerLink="ProductRestReference" portType="ns5:ProductRestReference_ptt"
-                  operation="ProductOp" inputVariable="getProduct_ProductOp_InputVariable"
-                  outputVariable="getProduct_ProductOp_OutputVariable" bpelx:invokeAsDetail="no"/>
+          <invoke name="getProduct" partnerLink="ProductRestReference"
+                  portType="ns5:ProductRestReference_ptt" operation="ProductOp"
+                  inputVariable="getProduct_ProductOp_InputVar" outputVariable="getProduct_ProductOp_OutputVar"
+                  bpelx:invokeAsDetail="no"/>
           <assign name="inputOrderrDetail">
             <copy>
               <from>$createOrderr_OrderrOp_OutputVariable.reply/ns11:orderr/ns11:id</from>
               <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderrDetail_OrderrDetailOp_InputVariable.request/ns12:orderrDetail/ns12:orderrId</to>
             </copy>
             <copy>
-              <from>$getProduct_ProductOp_OutputVariable.reply/ns13:product/ns13:id</from>
+              <from>$getProduct_ProductOp_OutputVar.reply/ns13:product/ns13:id</from>
               <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$createOrderrDetail_OrderrDetailOp_InputVariable.request/ns12:orderrDetail/ns12:productId</to>
             </copy>
             <copy>
@@ -164,19 +170,13 @@
         </sequence>
       </scope>
     </forEach>
-    <assign name="outputOrderrDetail">
-      <copy>
-        <from>$createOrderrDetail_OrderrDetailOp_OutputVariable.reply/ns15:orderrDetail/ns15:orderrId</from>
-        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$replyOutput_OrderOperation_OutputVariable.reply/ns14:order/ns14:id</to>
-      </copy>
-    </assign>
     <assign name="generateEmailMsg">
       <copy>
-        <from>concat('customer',$receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:taxIdentificationNumber, '@gmail.com')</from>
+        <from>concat(xp20:lower-case($getCustomer_Op1_OutputVar.reply/ns8:customer/ns8:firstName),$receiveInput_OrderOperation_InputVariable.request/ns6:order/ns6:taxIdentificationNumber, '@gmail.com')</from>
         <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$sendEmailMsg_sendEmail_InputVariable.parameters/toEmail</to>
       </copy>
       <copy>
-        <from>'Your order was successfully processed.'</from>
+        <from>concat('Hi ',$getCustomer_Op1_OutputVar.reply/ns8:customer/ns8:firstName, ', your order #',$replyOutput_OrderOperation_OutputVariable.reply/ns14:order/ns14:id,' was successfully processed.') </from>
         <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$sendEmailMsg_sendEmail_InputVariable.parameters/message</to>
       </copy>
     </assign>

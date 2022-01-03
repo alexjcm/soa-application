@@ -15,8 +15,6 @@
           location="WSDLs/OrderrRestReference.wsdl" importType="wsdl"/>
   <import namespace="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/OrderrDetailRestReference"
           location="WSDLs/OrderrDetailRestReference.wsdl" importType="wsdl"/>
-  <import namespace="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/CustomerRestReference"
-          location="WSDLs/CustomerRestReferenceWrapper.wsdl" importType="wsdl"/>
   <import namespace="http://email/" location="WSDLs/MyEmailServicePort.wsdl" importType="wsdl"/>
   <import namespace="http://email/" location="WSDLs/MyEmailServicePortWrapper.wsdl" importType="wsdl"/>
   <service name="MainRestService" ui:wsdlLocation="WSDLs/MainRestService.wsdl">
@@ -31,27 +29,27 @@
       <service name="MainRestService" ui:wsdlLocation="WSDLs/MainRestService.wsdl">
         <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/MainRestService#wsdl.interface(MainRestService_ptt)"/>
       </service>
-      <reference name="CustomerRestReference" ui:wsdlLocation="WSDLs/CustomerRestReferenceWrapper.wsdl">
-        <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/CustomerRestReference#wsdl.interface(CustomerRestReference_ptt)"/>
-      </reference>
       <reference name="OrderrRestReference" ui:wsdlLocation="WSDLs/OrderrRestReference.wsdl">
         <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/OrderrRestReference#wsdl.interface(OrderrRestReference_ptt)"/>
       </reference>
       <reference name="OrderrDetailRestReference" ui:wsdlLocation="WSDLs/OrderrDetailRestReference.wsdl">
         <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/OrderrDetailRestReference#wsdl.interface(OrderrDetailRestReference_ptt)"/>
       </reference>
-      <reference name="ProductRestReference" ui:wsdlLocation="WSDLs/ProductRestReference.wsdl">
-        <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/ProductRestReference#wsdl.interface(ProductRestReference_ptt)"/>
-      </reference>
       <reference name="EmailSOAPReference" ui:wsdlLocation="WSDLs/MyEmailServicePortWrapper.wsdl">
         <interface.wsdl interface="http://email/#wsdl.interface(MyEmailService)"/>
+      </reference>
+      <reference name="CustomerRestReference" ui:wsdlLocation="WSDLs/CustomerRestReference.wsdl">
+        <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/CustomerRestReference#wsdl.interface(CustomerRestReference_ptt)"/>
+      </reference>
+      <reference name="ProductRestReference" ui:wsdlLocation="WSDLs/ProductRestReference.wsdl">
+        <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/ProductRestReference#wsdl.interface(ProductRestReference_ptt)"/>
       </reference>
     </componentType>
     <property name="bpel.config.transaction" type="xs:string" many="false">required</property>
   </component>
   <reference name="CustomerRestReference" ui:wsdlLocation="WSDLs/CustomerRestReference.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/CustomerRestReference#wsdl.interface(CustomerRestReference_ptt)"/>
-    <binding.rest config="WADLs/CustomerRestReference.wadl" location="http://ajcm:7101/CustomSBProject/MainPS">
+    <binding.rest config="WADLs/CustomerRestReference.wadl" location="http://localhost:7101/CustomSBProject/MainPS">
       <property name="oracle.webservices.httpConnTimeout" type="xs:integer" many="false" override="may">50000</property>
       <property name="oracle.webservices.httpReadTimeout" type="xs:integer" many="false" override="may">500000</property>
       <property name="weblogic.wsee.wsat.transaction.flowOption" type="xs:string" many="false">WSDLDriven</property>
@@ -59,15 +57,16 @@
   </reference>
   <reference name="ProductRestReference" ui:wsdlLocation="WSDLs/ProductRestReference.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/ProductRestReference#wsdl.interface(ProductRestReference_ptt)"/>
-    <binding.rest config="WADLs/ProductRestReference.wadl" location="http://ajcm:7101/CustomSBProject/MainPS"/>
+    <binding.rest config="WADLs/ProductRestReference.wadl" location="http://localhost:7101/CustomSBProject/MainPS"/>
   </reference>
   <reference name="OrderrRestReference" ui:wsdlLocation="WSDLs/OrderrRestReference.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/OrderrRestReference#wsdl.interface(OrderrRestReference_ptt)"/>
-    <binding.rest config="WADLs/OrderrRestReference.wadl" location="http://ajcm:7101/CustomSBProject/MainPS"/>
+    <binding.rest config="WADLs/OrderrRestReference.wadl" location="http://localhost:7101/CustomSBProject/MainPS"/>
   </reference>
   <reference name="OrderrDetailRestReference" ui:wsdlLocation="WSDLs/OrderrDetailRestReference.wsdl">
     <interface.wsdl interface="http://xmlns.oracle.com/TestSOAApplication/Project_SYNC/OrderrDetailRestReference#wsdl.interface(OrderrDetailRestReference_ptt)"/>
-    <binding.rest config="WADLs/OrderrDetailRestReference.wadl" location="http://ajcm:7101/CustomSBProject/MainPS"/>
+    <binding.rest config="WADLs/OrderrDetailRestReference.wadl"
+                  location="http://localhost:7101/CustomSBProject/MainPS"/>
   </reference>
   <reference name="EmailSOAPReference" ui:wsdlLocation="WSDLs/MyEmailServicePort.wsdl">
     <interface.wsdl interface="http://email/#wsdl.interface(MyEmailService)"/>
@@ -77,10 +76,6 @@
     </binding.ws>
   </reference>
   <wire>
-    <source.uri>MyBPELProcess/CustomerRestReference</source.uri>
-    <target.uri>CustomerRestReference</target.uri>
-  </wire>
-  <wire>
     <source.uri>MyBPELProcess/OrderrRestReference</source.uri>
     <target.uri>OrderrRestReference</target.uri>
   </wire>
@@ -89,15 +84,19 @@
     <target.uri>OrderrDetailRestReference</target.uri>
   </wire>
   <wire>
-    <source.uri>MyBPELProcess/ProductRestReference</source.uri>
-    <target.uri>ProductRestReference</target.uri>
-  </wire>
-  <wire>
     <source.uri>MainRestService</source.uri>
     <target.uri>MyBPELProcess/MainRestService</target.uri>
   </wire>
   <wire>
     <source.uri>MyBPELProcess/EmailSOAPReference</source.uri>
     <target.uri>EmailSOAPReference</target.uri>
+  </wire>
+  <wire>
+    <source.uri>MyBPELProcess/CustomerRestReference</source.uri>
+    <target.uri>CustomerRestReference</target.uri>
+  </wire>
+  <wire>
+    <source.uri>MyBPELProcess/ProductRestReference</source.uri>
+    <target.uri>ProductRestReference</target.uri>
   </wire>
 </composite>

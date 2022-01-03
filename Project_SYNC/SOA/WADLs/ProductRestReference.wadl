@@ -11,9 +11,9 @@
    </grammars>
    <resources>
       <resource path="/product">
-         <method name="POST" soa:wsdlOperation="ProductOp">
-            <request>
-               <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/ProductRestReference_ProductOp_request"/>
+         <method name="GET" soa:wsdlOperation="ProductOp">
+            <request soa:paramElement="pns:Root-Element" xmlns:pns="http://TargetNamespace.com/ProductRestReference_ProductOp_request">
+               <param name="productCode" style="query" soa:expression="$msg.request/ns0:product/ns0:productCode" type="xsd:string"/>
             </request>
             <response status="200">
                <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/ProductRestReference_ProductOp_response"/>

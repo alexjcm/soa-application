@@ -11,9 +11,9 @@
    </grammars>
    <resources>
       <resource path="/customer">
-         <method name="POST" soa:wsdlOperation="Operation1">
-            <request>
-               <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/CustomerRestReference_Operation1_request"/>
+         <method name="GET" soa:wsdlOperation="Operation1">
+            <request soa:paramElement="pns:Root-Element" xmlns:pns="http://TargetNamespace.com/CustomerRestReference_Operation1_request">
+               <param name="taxIdentificationNumber" style="query" soa:expression="$msg.request/ns0:customer/ns0:taxIdentificationNumber" type="xsd:string"/>
             </request>
             <response status="200">
                <representation mediaType="application/json" element="cns:Root-Element" xmlns:cns="http://TargetNamespace.com/CustomerRestReference_Operation1_response"/>
